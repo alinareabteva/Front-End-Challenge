@@ -8,9 +8,12 @@
     padding-top: 10px;
     user-select:  none;
 
-
     &.pressed {
-        background-color: blue;
+        background-color: #2196f3;
+    }
+
+    &.released {
+        background-color: #57cc99;
     }
 
     &.l {

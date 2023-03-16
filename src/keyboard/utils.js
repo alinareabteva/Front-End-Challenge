@@ -1,3 +1,5 @@
+import { CLASSES } from "./Keyboard";
+
 export const KEYS = [
     [
         {
@@ -324,7 +326,8 @@ export const KEYS = [
         {
             title: "shift",
             value: "Shift",
-            className: "key shift l"
+            className: "key shift l",
+            location: 1
         },
         {
             title: "Z",
@@ -388,8 +391,9 @@ export const KEYS = [
         },
         {
             title: "shift",
-            value: "RShift",
-            className: "key shift r"
+            value: "Shift",
+            className: "key shift r",
+            location: 2
         },
     ],
     [
@@ -401,17 +405,20 @@ export const KEYS = [
         {
             title: "control",
             value: "Control",
-            className: "key leftctrl l"
+            className: "key leftctrl l",
+            location: 1
         },
         {
             title: "option",
             value: "Option",
-            className: "key l"
+            className: "key l",
+            location: 1
         },
         {
             title: "command",
             value: "Command",
-            className: "key  command l"
+            className: "key  command l",
+            location: 1
         },
         {
             title: "",
@@ -421,12 +428,14 @@ export const KEYS = [
         {
             title: "command",
             value: "Command",
-            className: "key  command r"
+            className: "key  command r",
+            location: 2
         },
         {
             title: "option",
             value: "Option",
-            className: "key r"
+            className: "key r",
+            location: 2
         },
 
     ]
@@ -507,3 +516,16 @@ export const ADDITIONAL_BUTTONS = [
         className: "key numlock"
     },
 ]
+
+export const setColorToKeyboard = ({ key, className, keyEvent, location }) => {
+    const dataAttribute = keyEvent?.shiftKey && key !== "Shift" ? "data-shift-value" : "data-value";
+    const keyToFind = key === "\\" ? "\\\\" : key;
+    const keyLocation = location > 0 ? `[data-location="${location}"]` : ''
+
+    const physicallyPressedKey = document.querySelector(`div.key[${dataAttribute}=\"${keyToFind}\"]${keyLocation}`);
+
+    if (physicallyPressedKey) {
+        physicallyPressedKey.classList.add(className)
+        physicallyPressedKey.classList.remove(CLASSES.PRESSED === className ? CLASSES.RELEASED : CLASSES.PRESSED)
+    }
+}

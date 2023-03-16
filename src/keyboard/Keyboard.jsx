@@ -1,12 +1,65 @@
-import React, { Fragment } from "react";
-import { KEYS, ARROWS, ADDITIONAL_BUTTONS } from "./keys";
+import React, { Fragment, useEffect } from "react";
+import { KEYS, ARROWS, ADDITIONAL_BUTTONS, setColorToKeyboard } from "./utils";
 import Key from "./key/Key";
-import "./Keyboard.scss"
+import "./Keyboard.scss";
+
+export const CLASSES = {
+    PRESSED: "pressed",
+    RELEASED: "released"
+}
 
 const Keyboard = () => {
-    const onClick = (e) => {
-        console.log(e.target.dataset.shiftValue, e.target.dataset.value)
+
+    const onMouseDown = (e) => {
+        e.preventDefault();
+        const dataset = e?.target?.dataset
+        setColorToKeyboard({
+            key: dataset.value,
+            className: CLASSES.PRESSED,
+            location: dataset.location
+        });
     }
+
+    const onMouseUp = (e) => {
+        e.preventDefault();
+        const dataset = e?.target?.dataset
+        setColorToKeyboard({
+            key: dataset.value,
+            className: CLASSES.RELEASED,
+            location: dataset.location
+        });
+    }
+
+    useEffect(() => {
+        const onKeyDown = (keyEvent) => {
+            keyEvent.preventDefault();
+            setColorToKeyboard({
+                key: keyEvent.key,
+                className: CLASSES.PRESSED,
+                location: keyEvent.location,
+                keyEvent
+            });
+        }
+
+        const onKeyUp = (keyEvent) => {
+            keyEvent.preventDefault();
+            setColorToKeyboard({
+                key: keyEvent.key,
+                className: CLASSES.RELEASED,
+                location: keyEvent.location,
+                keyEvent
+            });
+        }
+
+        window.addEventListener('keydown', onKeyDown);
+        window.addEventListener('keyup', onKeyUp);
+
+        return () => {
+            window.removeEventListener('keydown', onKeyDown);
+            window.removeEventListener('keyup', onKeyUp);
+
+        }
+    }, [])
 
     return (
         <div className="keyboard-layout">
@@ -15,7 +68,8 @@ const Keyboard = () => {
                     {
                         keyRow.map((key, keyIndex) => (
                             <Key key={`${key.value}-${keyIndex}`}
-                                onClick={onClick}
+                                onMouseDown={onMouseDown}
+                                onMouseUp={onMouseUp}
                                 {...key}
                             />
                         ))
@@ -27,7 +81,8 @@ const Keyboard = () => {
                 {ARROWS.map((arrow, index) => (
                     <Key
                         key={index}
-                        onClick={onClick}
+                        onMouseDown={onMouseDown}
+                        onMouseUp={onMouseUp}
                         {...arrow}
                     />
                 ))}
@@ -37,7 +92,8 @@ const Keyboard = () => {
                 {ADDITIONAL_BUTTONS.map((button, index) => (
                     <Key
                         key={index}
-                        onClick={onClick}
+                        onMouseDown={onMouseDown}
+                        onMouseUp={onMouseUp}
                         {...button}
                     />
                 ))}

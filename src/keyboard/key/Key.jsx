@@ -1,12 +1,15 @@
 import "./Key.scss";
 
-const Key = ({title, value, shiftValue, className, onClick }) => {
+const Key = ({ title, value, shiftValue, className, location, onMouseDown, onMouseUp }) => {
+
     return (
         <div
-            onClick={onClick}
+            onMouseDown={onMouseDown}
+            onMouseUp={onMouseUp}
             className={className}
             data-value={value}
             data-shift-value={shiftValue}
+            data-location={location}
         >
             {title}
         </div>
