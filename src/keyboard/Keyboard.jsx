@@ -4,6 +4,7 @@ import Key from "./key/Key";
 import "./Keyboard.scss";
 
 const COLOR_CHANGE_TIME = 3000;
+const INTERVAL_TIME = 60 * 1000;
 
 const Keyboard = () => {
     const [keysTimeoutMap, setKeysTimeoutMap] = useState({})
@@ -42,6 +43,23 @@ const Keyboard = () => {
             });
         })
     }
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+                setKeysTimeoutMap(prevState => {
+                    Object.values(prevState).forEach(clearTimeout)
+                    return {}
+                })
+                document.querySelectorAll(".key").forEach(key => {
+                    key.classList.remove(CLASSES.PRESSED)
+                    key.classList.remove(CLASSES.RELEASED)
+                })
+                
+        }, INTERVAL_TIME)
+        return () => {
+            clearInterval(timer);
+        }
+    }, [])
 
     useEffect(() => {
         const onKeyDown = (keyEvent) => {
