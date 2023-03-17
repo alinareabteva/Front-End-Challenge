@@ -1,4 +1,7 @@
-import { CLASSES } from "./Keyboard";
+export const CLASSES = {
+    PRESSED: "pressed",
+    RELEASED: "released"
+}
 
 export const KEYS = [
     [

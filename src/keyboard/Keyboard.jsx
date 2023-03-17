@@ -1,14 +1,25 @@
-import React, { Fragment, useEffect } from "react";
-import { KEYS, ARROWS, ADDITIONAL_BUTTONS, setColorToKeyboard } from "./utils";
+import React, { Fragment, useEffect, useState } from "react";
+import { KEYS, ARROWS, ADDITIONAL_BUTTONS, setColorToKeyboard, CLASSES } from "./utils";
 import Key from "./key/Key";
 import "./Keyboard.scss";
 
-export const CLASSES = {
-    PRESSED: "pressed",
-    RELEASED: "released"
-}
+const COLOR_CHANGE_TIME = 3000;
 
 const Keyboard = () => {
+    const [keysTimeoutMap, setKeysTimeoutMap] = useState({})
+
+    const delayTaskForKey = (key, func, time = COLOR_CHANGE_TIME) => {
+        const keyToUse = key.toLowerCase()
+        if (keysTimeoutMap[keyToUse]) {
+            clearTimeout(keysTimeoutMap[keyToUse])
+        }
+
+        const timeoutID = setTimeout(func, time);
+        setKeysTimeoutMap(prevState => ({
+            ...prevState,
+            [keyToUse]: timeoutID
+        }));
+    }
 
     const onMouseDown = (e) => {
         e.preventDefault();
@@ -23,11 +34,13 @@ const Keyboard = () => {
     const onMouseUp = (e) => {
         e.preventDefault();
         const dataset = e?.target?.dataset
-        setColorToKeyboard({
-            key: dataset.value,
-            className: CLASSES.RELEASED,
-            location: dataset.location
-        });
+        delayTaskForKey(dataset.value, () => {
+            setColorToKeyboard({
+                key: dataset.value,
+                className: CLASSES.RELEASED,
+                location: dataset.location
+            });
+        })
     }
 
     useEffect(() => {
@@ -40,15 +53,16 @@ const Keyboard = () => {
                 keyEvent
             });
         }
-
         const onKeyUp = (keyEvent) => {
             keyEvent.preventDefault();
-            setColorToKeyboard({
-                key: keyEvent.key,
-                className: CLASSES.RELEASED,
-                location: keyEvent.location,
-                keyEvent
-            });
+            delayTaskForKey(keyEvent.key, () => {
+                setColorToKeyboard({
+                    key: keyEvent.key,
+                    className: CLASSES.RELEASED,
+                    location: keyEvent.location,
+                    keyEvent
+                });
+            })
         }
 
         window.addEventListener('keydown', onKeyDown);
@@ -57,7 +71,6 @@ const Keyboard = () => {
         return () => {
             window.removeEventListener('keydown', onKeyDown);
             window.removeEventListener('keyup', onKeyUp);
-
         }
     }, [])
 
