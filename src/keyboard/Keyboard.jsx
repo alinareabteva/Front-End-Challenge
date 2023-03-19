@@ -6,7 +6,7 @@ import "./Keyboard.scss";
 const COLOR_CHANGE_TIME = 3000;
 const INTERVAL_TIME = 60 * 1000;
 
-const Keyboard = () => {
+const Keyboard = ({ addKey }) => {
     const [keysTimeoutMap, setKeysTimeoutMap] = useState({})
 
     const delayTaskForKey = (key, func, time = COLOR_CHANGE_TIME) => {
@@ -24,12 +24,16 @@ const Keyboard = () => {
 
     const onMouseDown = (e) => {
         e.preventDefault();
-        const dataset = e?.target?.dataset
+        const { value: key, location } = e?.target?.dataset
         setColorToKeyboard({
-            key: dataset.value,
+            key,
             className: CLASSES.PRESSED,
-            location: dataset.location
+            location
         });
+        addKey({
+            key,
+            location
+        })
     }
 
     const onMouseUp = (e) => {
@@ -46,15 +50,14 @@ const Keyboard = () => {
 
     useEffect(() => {
         const timer = setInterval(() => {
-                setKeysTimeoutMap(prevState => {
-                    Object.values(prevState).forEach(clearTimeout)
-                    return {}
-                })
-                document.querySelectorAll(".key").forEach(key => {
-                    key.classList.remove(CLASSES.PRESSED)
-                    key.classList.remove(CLASSES.RELEASED)
-                })
-                
+            setKeysTimeoutMap(prevState => {
+                Object.values(prevState).forEach(clearTimeout)
+                return {}
+            })
+            document.querySelectorAll(".key").forEach(key => {
+                key.classList.remove(CLASSES.PRESSED)
+                key.classList.remove(CLASSES.RELEASED)
+            })
         }, INTERVAL_TIME)
         return () => {
             clearInterval(timer);
@@ -68,8 +71,13 @@ const Keyboard = () => {
                 key: keyEvent.key,
                 className: CLASSES.PRESSED,
                 location: keyEvent.location,
-                keyEvent
+                shiftEnabled: keyEvent.shiftKey,
+                capsLockEnabled: keyEvent.getModifierState("CapsLock")
             });
+            addKey({
+                key: keyEvent.key,
+                location: keyEvent.location
+            })
         }
         const onKeyUp = (keyEvent) => {
             keyEvent.preventDefault();
@@ -78,7 +86,8 @@ const Keyboard = () => {
                     key: keyEvent.key,
                     className: CLASSES.RELEASED,
                     location: keyEvent.location,
-                    keyEvent
+                    shiftEnabled: keyEvent.shiftKey,
+                    capsLockEnabled: keyEvent.getModifierState("CapsLock")
                 });
             })
         }

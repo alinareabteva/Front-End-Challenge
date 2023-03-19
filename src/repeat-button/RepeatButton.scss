@@ -1,0 +1,17 @@
+.repeat-btn-wrapper {
+    margin: 20px 0;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.repeat {
+    width: 100px;
+    background: #ffc300;
+    border: 1px solid #ffd000;
+    border-radius: 5px;
+    font-size: 16px;
+    text-align: center;
+    padding: 10px;
+    user-select: none;
+}

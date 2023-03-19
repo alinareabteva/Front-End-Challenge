@@ -520,11 +520,14 @@ export const ADDITIONAL_BUTTONS = [
     },
 ]
 
-export const setColorToKeyboard = ({ key, className, keyEvent, location }) => {
-    const dataAttribute = keyEvent?.shiftKey && key !== "Shift" ? "data-shift-value" : "data-value";
+export const setColorToKeyboard = ({ key, className, location, shiftEnabled, capsLockEnabled }) => {
+    let dataAttribute =  "data-value";
+    // TODO: Handle Caps Lock on
+    if ((shiftEnabled && key !== "Shift")) {
+        dataAttribute = "data-shift-value" 
+    }
     const keyToFind = key === "\\" ? "\\\\" : key;
-    const keyLocation = location > 0 ? `[data-location="${location}"]` : ''
-
+    const keyLocation = location > 0 ? `[data-location="${location}"]` : '';
     const physicallyPressedKey = document.querySelector(`div.key[${dataAttribute}=\"${keyToFind}\"]${keyLocation}`);
 
     if (physicallyPressedKey) {
