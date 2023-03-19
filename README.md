@@ -1,7 +1,7 @@
 ## Requirements
 
 1. Use HTML and CSS to render a keyboard layout UI. Any framework can be used
-(React, Svelte, Vue, etc.) - For example
+(React, Svelte, Vue, etc.) 
 
 1. Change the color of the pressed key (physically or virtually) to indicate three different states:
 a. Default: Gray
@@ -23,3 +23,5 @@ the pressed State
 In the project directory, you can run:
 
 ### `npm start`
+
+## [Hosted App](https://alinareabteva.github.io/Front-End-Challenge/)
